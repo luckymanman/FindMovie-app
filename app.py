@@ -64,10 +64,13 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # Search bar for movies
-search_query = st.text_input("Search for a movie:")
+search_query = st.text_input("Search for a movie:", placeholder="Enter movie name...", key="search_query")
 
-# Perform search if the user enters a query
-if search_query:
+# Add a search button
+search_button = st.button("Search")
+
+# Perform search if the user enters a query or clicks the button
+if search_query or search_button:
     movies = search_movie(search_query)
 
     if movies:
