@@ -16,18 +16,6 @@ def search_movie(query):
     
     return data['results']
 
-# Fetch movie recommendations from TMDB based on movie ID
-def fetch_recommendations(movie_id):
-    url = f'https://api.themoviedb.org/3/movie/{movie_id}/recommendations?api_key={api_key}'
-    response = requests.get(url)
-    data = response.json()
-
-    if 'results' not in data:
-        st.error("No recommendations found.")
-        return []
-
-    return data['results']
-
 # Fetch the poster URL for the movie
 def fetch_poster_url(poster_path):
     if poster_path:
@@ -64,11 +52,12 @@ st.markdown("""
         .movie-img:hover {
             transform: scale(1.1);
         }
-        .movie-title {
-            color: white;
-            font-size: 14px;
-            text-align: center;
-            font-weight: bold;
+        .search-bar {
+            width: 100%;
+            max-width: 600px;
+            margin-bottom: 20px;
+        }
+        .stTextInput>div>div>input {
             padding: 10px;
         }
     </style>
@@ -83,19 +72,20 @@ if search_query:
 
     if movies:
         st.write(f"Results for '{search_query}':")
+        
+        # Display movies in a grid layout
         cols = st.columns(5)  # Display 5 posters per row
-
+        
         for i, movie in enumerate(movies):
             with cols[i % 5]:  # Cycle through columns for each movie
                 poster_url = fetch_poster_url(movie['poster_path'])
                 if poster_url:
-                    # Make the poster clickable, leading to the movie's TMDB page
+                    # Movie poster without a title box beneath
                     st.markdown(f'''
                         <div class="movie-card">
                             <a href="https://www.themoviedb.org/movie/{movie["id"]}" target="_blank">
                                 <img src="{poster_url}" class="movie-img" width="150"/>
                             </a>
-                            <div class="movie-title">{movie["title"]}</div>
                         </div>
                     ''', unsafe_allow_html=True)
                 else:
