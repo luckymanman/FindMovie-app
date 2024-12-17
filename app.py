@@ -23,14 +23,28 @@ def fetch_poster_url(poster_path):
     return None
 
 # Streamlit UI
-st.title("FindMovie: A Movie Recommendation System")
-
-# Apply custom CSS for styling
+# Add custom CSS to style the title and page
 st.markdown("""
     <style>
         body {
             background-color: #141414;
             color: white;
+        }
+        /* Cool Title Style */
+        .cool-title {
+            font-family: 'Arial', sans-serif;
+            font-size: 48px;
+            font-weight: bold;
+            background: linear-gradient(to left, #ff6347, #6a5acd, #32cd32);
+            -webkit-background-clip: text;
+            color: transparent;
+            text-align: center;
+            animation: fadeIn 2s ease-out;
+            text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.6);
+        }
+        @keyframes fadeIn {
+            0% { opacity: 0; }
+            100% { opacity: 1; }
         }
         .movie-card {
             display: flex;
@@ -62,6 +76,9 @@ st.markdown("""
         }
     </style>
 """, unsafe_allow_html=True)
+
+# Cool system title
+st.markdown('<h1 class="cool-title">FindMovie: A Movie Recommendation System</h1>', unsafe_allow_html=True)
 
 # Search bar for movies
 search_query = st.text_input("Search for a movie:", placeholder="Enter movie name...", key="search_query")
