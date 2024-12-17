@@ -23,14 +23,16 @@ def fetch_poster_url(poster_path):
     return None
 
 # Streamlit UI
-# Add custom CSS to style the title and page
+# Add custom CSS for dark mode styling
 st.markdown("""
     <style>
+        /* Dark Mode Styles */
         body {
-            background-color: #141414;
+            background-color: #121212;
             color: white;
         }
-        /* Cool Title Style */
+
+        /* Title with cool gradient and shadow */
         .cool-title {
             font-family: 'Arial', sans-serif;
             font-size: 48px;
@@ -40,40 +42,69 @@ st.markdown("""
             color: transparent;
             text-align: center;
             animation: fadeIn 2s ease-out;
-            text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.6);
+            text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.7);
         }
+
         @keyframes fadeIn {
             0% { opacity: 0; }
             100% { opacity: 1; }
         }
+
+        /* Search Bar Styling */
+        .stTextInput>div>div>input {
+            background-color: #333333;
+            color: white;
+            border: 1px solid #555555;
+            border-radius: 5px;
+            padding: 12px;
+        }
+
+        /* Buttons Styling */
+        .stButton>button {
+            background-color: #444444;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .stButton>button:hover {
+            background-color: #555555;
+        }
+
+        /* Movie Card Styling */
         .movie-card {
             display: flex;
             flex-direction: column;
             align-items: center;
             margin: 10px;
             border-radius: 15px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
             transition: transform 0.3s ease, box-shadow 0.3s ease;
         }
+
         .movie-card:hover {
             transform: scale(1.05);
-            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.7);
         }
+
         .movie-img {
             border-radius: 15px;
             transition: transform 0.3s ease;
         }
+
         .movie-img:hover {
             transform: scale(1.1);
         }
+
+        /* Search bar and button layout */
         .search-bar {
             width: 100%;
             max-width: 600px;
             margin-bottom: 20px;
         }
-        .stTextInput>div>div>input {
-            padding: 10px;
-        }
+
     </style>
 """, unsafe_allow_html=True)
 
