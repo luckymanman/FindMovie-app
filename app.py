@@ -65,7 +65,8 @@ st.markdown("""
             display: flex;
             flex-direction: column;
             align-items: center;
-            padding: 5px;
+            padding: 10px;
+            margin: 5%;
         }
         .movie-title {
             color: white;
@@ -82,9 +83,12 @@ st.markdown("""
             transform: scale(1.1);
         }
         .search-bar {
-            width: 75%;
+            width: 100%;
             max-width: 600px;
             margin-bottom: 20px;
+        }
+        .stTextInput>div>div>input {
+            padding: 10px;
         }
     </style>
 """, unsafe_allow_html=True)
