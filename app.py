@@ -36,9 +36,10 @@ def fetch_poster_url(poster_path):
 
 # Streamlit UI
 st.title("FindMovie: A Movie Recommendation System")
+st.markdown("### Search and discover new movies")
 
-# Search bar for movies
-search_query = st.text_input("Search for a movie:")
+# Customizing the search bar
+search_query = st.text_input("Search for a movie:", placeholder="Search for a movie...", key="search_query", label_visibility="collapsed")
 
 # Perform search if the user enters a query
 if search_query:
@@ -46,15 +47,25 @@ if search_query:
 
     if movies:
         st.write(f"Results for '{search_query}':")
+        
+        # Grid Layout for displaying movies
         cols = st.columns(5)  # Display 5 posters per row
-
+        
         for i, movie in enumerate(movies):
             with cols[i % 5]:  # Cycle through columns for each movie
                 poster_url = fetch_poster_url(movie['poster_path'])
                 if poster_url:
-                    # Make the poster clickable, leading to the movie's TMDB page
-                    st.markdown(f'<a href="https://www.themoviedb.org/movie/{movie["id"]}" target="_blank"><img src="{poster_url}" width="150"/></a>', unsafe_allow_html=True)
+                    # Displaying movie posters with hover effect
+                    st.markdown(
+                        f'''
+                        <a href="https://www.themoviedb.org/movie/{movie["id"]}" target="_blank">
+                            <div style="position:relative;">
+                                <img src="{poster_url}" width="150" style="border-radius: 8px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); transition: transform 0.3s ease;">
+                                <div style="position:absolute; top:0; left:0; right:0; bottom:0; background: rgba(0,0,0,0.6); border-radius: 8px; display:none; justify-content:center; align-items:center;">
+                                    <div style="color: white; font-size: 16px; text-align:center; font-weight:bold; padding:10px;">{movie["title"]}</div>
+                                </div>
+                            </div>
+                        </a>
+                        ''', unsafe_allow_html=True)
                 else:
                     st.write("Poster not available")
-
-       
