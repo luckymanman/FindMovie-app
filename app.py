@@ -69,7 +69,7 @@ st.markdown("""
         }
         .movie-title {
             color: white;
-            font-size: 16px;
+            font-size: 14px;
             text-align: center;
             font-weight: bold;
         }
@@ -81,6 +81,11 @@ st.markdown("""
         .movie-img:hover {
             transform: scale(1.1);
         }
+        .search-bar {
+            width: 100%;
+            max-width: 600px;
+            margin-bottom: 20px;
+        }
     </style>
 """, unsafe_allow_html=True)
 
@@ -88,7 +93,7 @@ st.title("FindMovie: A Movie Recommendation System")
 st.markdown("### Search and discover new movies")
 
 # Search bar for movies with dark theme
-search_query = st.text_input("Search for a movie:", placeholder="Search for a movie...", key="search_query", label_visibility="collapsed")
+search_query = st.text_input("Search for a movie:", placeholder="Search for a movie...", key="search_query", label_visibility="collapsed", help="Enter movie title here")
 
 # Perform search if the user enters a query
 if search_query:
@@ -97,7 +102,7 @@ if search_query:
     if movies:
         st.write(f"Results for '{search_query}':")
         
-        # Grid Layout for displaying movies
+        # Grid Layout for displaying movies, keeping a closer alignment
         cols = st.columns(5)  # Display 5 posters per row
         
         for i, movie in enumerate(movies):
