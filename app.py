@@ -23,18 +23,18 @@ def fetch_poster_url(poster_path):
     return None
 
 # Streamlit UI
-# Add custom CSS for dark mode styling
+# Add custom CSS for dark mode styling and responsiveness
 st.markdown("""
     <style>
         /* Dark Mode Styles */
         body {
             background-color: #121212;
             color: white;
+            font-family: 'Arial', sans-serif;
         }
 
-        /* Title with cool gradient and shadow */
+        /* Cool Title with gradient and shadow */
         .cool-title {
-            font-family: 'Arial', sans-serif;
             font-size: 48px;
             font-weight: bold;
             background: linear-gradient(to left, #ff6347, #6a5acd, #32cd32);
@@ -57,6 +57,8 @@ st.markdown("""
             border: 1px solid #555555;
             border-radius: 5px;
             padding: 12px;
+            width: 100%;
+            max-width: 600px;
         }
 
         /* Buttons Styling */
@@ -98,13 +100,43 @@ st.markdown("""
             transform: scale(1.1);
         }
 
-        /* Search bar and button layout */
+        /* Responsiveness */
         .search-bar {
             width: 100%;
             max-width: 600px;
             margin-bottom: 20px;
         }
 
+        /* Responsive Columns for Movie Posters */
+        @media only screen and (max-width: 600px) {
+            /* For small screens (e.g. smartphones), use 2 columns */
+            .stColumn {
+                flex: 1 1 50%; /* 50% width for each column */
+            }
+            .movie-img {
+                width: 100%; /* Full width for mobile */
+            }
+        }
+
+        @media only screen and (min-width: 601px) and (max-width: 1024px) {
+            /* For medium screens (e.g. tablets), use 3 columns */
+            .stColumn {
+                flex: 1 1 33%; /* 33% width for each column */
+            }
+            .movie-img {
+                width: 100%; /* Full width for tablets */
+            }
+        }
+
+        @media only screen and (min-width: 1025px) {
+            /* For large screens (e.g. desktops), use 5 columns */
+            .stColumn {
+                flex: 1 1 18%; /* 18% width for each column */
+            }
+            .movie-img {
+                width: 150px; /* Fixed width for desktops */
+            }
+        }
     </style>
 """, unsafe_allow_html=True)
 
@@ -124,9 +156,8 @@ if search_query or search_button:
     if movies:
         st.write(f"Results for '{search_query}':")
         
-        # Display movies in a grid layout
-        cols = st.columns(5)  # Display 5 posters per row
-        
+        # Display movies in a grid layout with responsive columns
+        cols = st.columns(5)  # Display 5 posters per row on large screens
         for i, movie in enumerate(movies):
             with cols[i % 5]:  # Cycle through columns for each movie
                 poster_url = fetch_poster_url(movie['poster_path'])
@@ -135,7 +166,7 @@ if search_query or search_button:
                     st.markdown(f'''
                         <div class="movie-card">
                             <a href="https://www.themoviedb.org/movie/{movie["id"]}" target="_blank">
-                                <img src="{poster_url}" class="movie-img" width="150"/>
+                                <img src="{poster_url}" class="movie-img" />
                             </a>
                         </div>
                     ''', unsafe_allow_html=True)
