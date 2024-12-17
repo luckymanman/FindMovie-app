@@ -27,8 +27,36 @@ def toggle_mode():
     if 'mode' not in st.session_state:
         st.session_state.mode = 'dark'  # Default to dark mode
 
-    if st.button("Switch to Dark Mode" if st.session_state.mode == 'light' else "Switch to Light Mode"):
+    # Minimalist button at the top-right corner
+    st.markdown("""
+        <style>
+            .theme-button {
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background-color: transparent;
+                color: white;
+                border: 1px solid #888;
+                padding: 8px 12px;
+                font-size: 14px;
+                cursor: pointer;
+                border-radius: 5px;
+                z-index: 100;
+            }
+
+            .theme-button:hover {
+                background-color: #444;
+            }
+        </style>
+    """, unsafe_allow_html=True)
+
+    # Switch button text based on current theme
+    button_text = "Switch to Dark Mode" if st.session_state.mode == 'light' else "Switch to Light Mode"
+
+    # Button action
+    if st.markdown(f'<button class="theme-button" onclick="window.location.reload()">{button_text}</button>', unsafe_allow_html=True):
         st.session_state.mode = 'light' if st.session_state.mode == 'dark' else 'dark'
+
 
 # Apply styles based on the selected mode
 def apply_styles():
