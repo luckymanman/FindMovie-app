@@ -65,7 +65,7 @@ st.markdown("""
             display: flex;
             flex-direction: column;
             align-items: center;
-            padding: 10px;
+            padding: 5px;
         }
         .movie-title {
             color: white;
@@ -82,7 +82,7 @@ st.markdown("""
             transform: scale(1.1);
         }
         .search-bar {
-            width: 100%;
+            width: 75%;
             max-width: 600px;
             margin-bottom: 20px;
         }
