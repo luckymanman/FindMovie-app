@@ -35,10 +35,59 @@ def fetch_poster_url(poster_path):
     return None
 
 # Streamlit UI
+st.set_page_config(page_title="FindMovie", page_icon="🎬", layout="wide")
+
+# Apply dark mode theme using Streamlit's custom CSS
+st.markdown("""
+    <style>
+        body {
+            background-color: #141414;
+            color: white;
+        }
+        .css-1d391kg {
+            background-color: #141414;
+        }
+        .stTextInput>div>div>input {
+            background-color: #333;
+            color: white;
+        }
+        .stTextInput label {
+            color: white;
+        }
+        .stButton>button {
+            background-color: #e50914;
+            color: white;
+        }
+        .stMarkdown {
+            color: white;
+        }
+        .movie-card {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 10px;
+        }
+        .movie-title {
+            color: white;
+            font-size: 16px;
+            text-align: center;
+            font-weight: bold;
+        }
+        .movie-img {
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            transition: transform 0.3s ease;
+        }
+        .movie-img:hover {
+            transform: scale(1.1);
+        }
+    </style>
+""", unsafe_allow_html=True)
+
 st.title("FindMovie: A Movie Recommendation System")
 st.markdown("### Search and discover new movies")
 
-# Customizing the search bar
+# Search bar for movies with dark theme
 search_query = st.text_input("Search for a movie:", placeholder="Search for a movie...", key="search_query", label_visibility="collapsed")
 
 # Perform search if the user enters a query
@@ -55,17 +104,14 @@ if search_query:
             with cols[i % 5]:  # Cycle through columns for each movie
                 poster_url = fetch_poster_url(movie['poster_path'])
                 if poster_url:
-                    # Displaying movie posters with hover effect
-                    st.markdown(
-                        f'''
-                        <a href="https://www.themoviedb.org/movie/{movie["id"]}" target="_blank">
-                            <div style="position:relative;">
-                                <img src="{poster_url}" width="150" style="border-radius: 8px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); transition: transform 0.3s ease;">
-                                <div style="position:absolute; top:0; left:0; right:0; bottom:0; background: rgba(0,0,0,0.6); border-radius: 8px; display:none; justify-content:center; align-items:center;">
-                                    <div style="color: white; font-size: 16px; text-align:center; font-weight:bold; padding:10px;">{movie["title"]}</div>
-                                </div>
-                            </div>
-                        </a>
-                        ''', unsafe_allow_html=True)
+                    # Movie Poster with hover effect
+                    st.markdown(f'''
+                        <div class="movie-card">
+                            <a href="https://www.themoviedb.org/movie/{movie["id"]}" target="_blank">
+                                <img src="{poster_url}" class="movie-img" width="150"/>
+                            </a>
+                            <div class="movie-title">{movie["title"]}</div>
+                        </div>
+                    ''', unsafe_allow_html=True)
                 else:
                     st.write("Poster not available")
