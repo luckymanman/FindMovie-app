@@ -22,123 +22,198 @@ def fetch_poster_url(poster_path):
         return f"https://image.tmdb.org/t/p/w500{poster_path}"
     return None
 
+# Function to toggle dark/light mode
+def toggle_mode():
+    if 'mode' not in st.session_state:
+        st.session_state.mode = 'dark'  # Default to dark mode
+
+    if st.button("Switch to Dark Mode" if st.session_state.mode == 'light' else "Switch to Light Mode"):
+        st.session_state.mode = 'light' if st.session_state.mode == 'dark' else 'dark'
+
+# Apply styles based on the selected mode
+def apply_styles():
+    if st.session_state.mode == 'dark':
+        # Dark mode styles
+        st.markdown("""
+            <style>
+                body {
+                    background-color: #121212;
+                    color: white;
+                }
+
+                .cool-title {
+                    font-size: 48px;
+                    font-weight: bold;
+                    background: linear-gradient(to left, #ff6347, #6a5acd, #32cd32);
+                    -webkit-background-clip: text;
+                    color: transparent;
+                    text-align: center;
+                    animation: fadeIn 2s ease-out;
+                    text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.7);
+                }
+
+                @keyframes fadeIn {
+                    0% { opacity: 0; }
+                    100% { opacity: 1; }
+                }
+
+                .stTextInput>div>div>input {
+                    background-color: #333333;
+                    color: white;
+                    border: 1px solid #555555;
+                    border-radius: 5px;
+                    padding: 12px;
+                    width: 100%;
+                    max-width: 600px;
+                }
+
+                .stButton>button {
+                    background-color: #444444;
+                    color: white;
+                    border: none;
+                    padding: 10px 20px;
+                    border-radius: 5px;
+                    cursor: pointer;
+                }
+
+                .stButton>button:hover {
+                    background-color: #555555;
+                }
+
+                .movie-card {
+                    display: flex;
+                    flex-direction: column;
+                    align-items: center;
+                    margin: 10px;
+                    border-radius: 15px;
+                    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+                    transition: transform 0.3s ease, box-shadow 0.3s ease;
+                }
+
+                .movie-card:hover {
+                    transform: scale(1.05);
+                    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.7);
+                }
+
+                .movie-img {
+                    border-radius: 15px;
+                    transition: transform 0.3s ease;
+                }
+
+                .movie-img:hover {
+                    transform: scale(1.1);
+                }
+
+                /* Responsive Columns */
+                @media only screen and (max-width: 600px) {
+                    .stColumn { flex: 1 1 50%; }
+                    .movie-img { width: 100%; }
+                }
+
+                @media only screen and (min-width: 601px) and (max-width: 1024px) {
+                    .stColumn { flex: 1 1 33%; }
+                    .movie-img { width: 100%; }
+                }
+
+                @media only screen and (min-width: 1025px) {
+                    .stColumn { flex: 1 1 18%; }
+                    .movie-img { width: 150px; }
+                }
+            </style>
+        """, unsafe_allow_html=True)
+    else:
+        # Light mode styles
+        st.markdown("""
+            <style>
+                body {
+                    background-color: #f0f0f0;
+                    color: black;
+                }
+
+                .cool-title {
+                    font-size: 48px;
+                    font-weight: bold;
+                    background: linear-gradient(to left, #ff6347, #6a5acd, #32cd32);
+                    -webkit-background-clip: text;
+                    color: transparent;
+                    text-align: center;
+                    animation: fadeIn 2s ease-out;
+                    text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+                }
+
+                @keyframes fadeIn {
+                    0% { opacity: 0; }
+                    100% { opacity: 1; }
+                }
+
+                .stTextInput>div>div>input {
+                    background-color: #ffffff;
+                    color: black;
+                    border: 1px solid #ddd;
+                    border-radius: 5px;
+                    padding: 12px;
+                    width: 100%;
+                    max-width: 600px;
+                }
+
+                .stButton>button {
+                    background-color: #dddddd;
+                    color: black;
+                    border: none;
+                    padding: 10px 20px;
+                    border-radius: 5px;
+                    cursor: pointer;
+                }
+
+                .stButton>button:hover {
+                    background-color: #cccccc;
+                }
+
+                .movie-card {
+                    display: flex;
+                    flex-direction: column;
+                    align-items: center;
+                    margin: 10px;
+                    border-radius: 15px;
+                    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+                    transition: transform 0.3s ease, box-shadow 0.3s ease;
+                }
+
+                .movie-card:hover {
+                    transform: scale(1.05);
+                    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+                }
+
+                .movie-img {
+                    border-radius: 15px;
+                    transition: transform 0.3s ease;
+                }
+
+                .movie-img:hover {
+                    transform: scale(1.1);
+                }
+
+                /* Responsive Columns */
+                @media only screen and (max-width: 600px) {
+                    .stColumn { flex: 1 1 50%; }
+                    .movie-img { width: 100%; }
+                }
+
+                @media only screen and (min-width: 601px) and (max-width: 1024px) {
+                    .stColumn { flex: 1 1 33%; }
+                    .movie-img { width: 100%; }
+                }
+
+                @media only screen and (min-width: 1025px) {
+                    .stColumn { flex: 1 1 18%; }
+                    .movie-img { width: 150px; }
+                }
+            </style>
+        """, unsafe_allow_html=True)
+
 # Streamlit UI
-# Add custom CSS for dark mode styling and responsiveness
-st.markdown("""
-    <style>
-        /* Dark Mode Styles */
-        body {
-            background-color: #121212;
-            color: white;
-            font-family: 'Arial', sans-serif;
-        }
-
-        /* Cool Title with gradient and shadow */
-        .cool-title {
-            font-size: 48px;
-            font-weight: bold;
-            background: linear-gradient(to left, #ff6347, #6a5acd, #32cd32);
-            -webkit-background-clip: text;
-            color: transparent;
-            text-align: center;
-            animation: fadeIn 2s ease-out;
-            text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.7);
-        }
-
-        @keyframes fadeIn {
-            0% { opacity: 0; }
-            100% { opacity: 1; }
-        }
-
-        /* Search Bar Styling */
-        .stTextInput>div>div>input {
-            background-color: #333333;
-            color: white;
-            border: 1px solid #555555;
-            border-radius: 5px;
-            padding: 12px;
-            width: 100%;
-            max-width: 600px;
-        }
-
-        /* Buttons Styling */
-        .stButton>button {
-            background-color: #444444;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-
-        .stButton>button:hover {
-            background-color: #555555;
-        }
-
-        /* Movie Card Styling */
-        .movie-card {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            margin: 10px;
-            border-radius: 15px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
-
-        .movie-card:hover {
-            transform: scale(1.05);
-            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.7);
-        }
-
-        .movie-img {
-            border-radius: 15px;
-            transition: transform 0.3s ease;
-        }
-
-        .movie-img:hover {
-            transform: scale(1.1);
-        }
-
-        /* Responsiveness */
-        .search-bar {
-            width: 100%;
-            max-width: 600px;
-            margin-bottom: 20px;
-        }
-
-        /* Responsive Columns for Movie Posters */
-        @media only screen and (max-width: 600px) {
-            /* For small screens (e.g. smartphones), use 2 columns */
-            .stColumn {
-                flex: 1 1 50%; /* 50% width for each column */
-            }
-            .movie-img {
-                width: 100%; /* Full width for mobile */
-            }
-        }
-
-        @media only screen and (min-width: 601px) and (max-width: 1024px) {
-            /* For medium screens (e.g. tablets), use 3 columns */
-            .stColumn {
-                flex: 1 1 33%; /* 33% width for each column */
-            }
-            .movie-img {
-                width: 100%; /* Full width for tablets */
-            }
-        }
-
-        @media only screen and (min-width: 1025px) {
-            /* For large screens (e.g. desktops), use 5 columns */
-            .stColumn {
-                flex: 1 1 18%; /* 18% width for each column */
-            }
-            .movie-img {
-                width: 150px; /* Fixed width for desktops */
-            }
-        }
-    </style>
-""", unsafe_allow_html=True)
+toggle_mode()  # Add the toggle button to switch between modes
+apply_styles()  # Apply the selected mode styles
 
 # Cool system title
 st.markdown('<h1 class="cool-title">FindMovie: A Movie Recommendation System</h1>', unsafe_allow_html=True)
