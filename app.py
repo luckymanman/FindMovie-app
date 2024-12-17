@@ -249,7 +249,7 @@ st.markdown('<h1 class="cool-title">FindMovie: A Movie Recommendation System</h1
 # Search bar for movies
 search_query = st.text_input("Search for a movie:", placeholder="Enter movie name...", key="search_query")
 
-# Add a search button
+# Add a search button (now separated from the theme switch)
 search_button = st.button("Search")
 
 # Perform search if the user enters a query or clicks the button
