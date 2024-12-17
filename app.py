@@ -37,6 +37,43 @@ def fetch_poster_url(poster_path):
 # Streamlit UI
 st.title("FindMovie: A Movie Recommendation System")
 
+# Apply custom CSS for styling
+st.markdown("""
+    <style>
+        body {
+            background-color: #141414;
+            color: white;
+        }
+        .movie-card {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 10px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .movie-card:hover {
+            transform: scale(1.05);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5);
+        }
+        .movie-img {
+            border-radius: 15px;
+            transition: transform 0.3s ease;
+        }
+        .movie-img:hover {
+            transform: scale(1.1);
+        }
+        .movie-title {
+            color: white;
+            font-size: 14px;
+            text-align: center;
+            font-weight: bold;
+            padding: 10px;
+        }
+    </style>
+""", unsafe_allow_html=True)
+
 # Search bar for movies
 search_query = st.text_input("Search for a movie:")
 
@@ -53,6 +90,13 @@ if search_query:
                 poster_url = fetch_poster_url(movie['poster_path'])
                 if poster_url:
                     # Make the poster clickable, leading to the movie's TMDB page
-                    st.markdown(f'<a href="https://www.themoviedb.org/movie/{movie["id"]}" target="_blank"><img src="{poster_url}" width="150"/></a>', unsafe_allow_html=True)
+                    st.markdown(f'''
+                        <div class="movie-card">
+                            <a href="https://www.themoviedb.org/movie/{movie["id"]}" target="_blank">
+                                <img src="{poster_url}" class="movie-img" width="150"/>
+                            </a>
+                            <div class="movie-title">{movie["title"]}</div>
+                        </div>
+                    ''', unsafe_allow_html=True)
                 else:
                     st.write("Poster not available")
