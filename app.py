@@ -168,7 +168,6 @@ def apply_styles():
 
             /* Diagonal Genre List */
             .genre-button {
-                position: absolute;
                 transform: rotate(-45deg);
                 background-color: #444444;
                 color: white;
@@ -178,6 +177,7 @@ def apply_styles():
                 width: auto;
                 white-space: nowrap;
                 margin: 5px;
+                display: inline-block;
             }
 
             /* Responsive Columns */
@@ -239,9 +239,9 @@ st.markdown("## Genre List")
 
 genres = fetch_genres()
 
-# Display genre buttons diagonally
+# Display genre buttons horizontally and diagonally
 for idx, genre in enumerate(genres):
-    st.markdown(f'<div class="genre-button" style="top:{idx * 60}px; left:{idx * 100}px;">{genre["name"]}</div>', unsafe_allow_html=True)
+    st.markdown(f'<div class="genre-button" style="position: relative; top:{idx * 60}px; left:{idx * 100}px;">{genre["name"]}</div>', unsafe_allow_html=True)
     if st.button(genre['name'], key=genre['id']):
         genre_movies = fetch_movies_by_genre(genre['id'])
         if genre_movies:
