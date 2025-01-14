@@ -46,6 +46,30 @@ def fetch_recommended_movies():
     
     return data['results']
 
+# Fetch genres
+def fetch_genres():
+    url = f'https://api.themoviedb.org/3/genre/movie/list?api_key={api_key}'
+    response = requests.get(url)
+    data = response.json()
+
+    if 'genres' not in data:
+        st.error("Unable to fetch genres.")
+        return []
+
+    return data['genres']
+
+# Fetch movies for a specific genre
+def fetch_movies_by_genre(genre_id):
+    url = f'https://api.themoviedb.org/3/discover/movie?api_key={api_key}&with_genres={genre_id}'
+    response = requests.get(url)
+    data = response.json()
+
+    if 'results' not in data:
+        st.error("Unable to fetch movies for this genre.")
+        return []
+    
+    return data['results']
+
 # Apply dark mode styles
 def apply_styles():
     st.markdown("""
@@ -171,6 +195,37 @@ if search_query or search_button:
                     ''', unsafe_allow_html=True)
                 else:
                     st.write("Poster not available")
+
+# Genre List Section
+st.markdown("## Genre List")
+genres = fetch_genres()
+genre_buttons = [genre['name'] for genre in genres]
+
+# Display genre buttons
+selected_genre = st.selectbox("Select a genre:", genre_buttons)
+
+if selected_genre:
+    # Find the genre id based on the selected genre name
+    genre_id = next((genre['id'] for genre in genres if genre['name'] == selected_genre), None)
+    
+    # Fetch movies for the selected genre
+    if genre_id:
+        genre_movies = fetch_movies_by_genre(genre_id)
+        
+        if genre_movies:
+            st.write(f"Movies in the '{selected_genre}' genre:")
+            cols = st.columns(5)
+            for i, movie in enumerate(genre_movies):
+                with cols[i % 5]:
+                    poster_url = fetch_poster_url(movie['poster_path'])
+                    if poster_url:
+                        st.markdown(f'''
+                            <div class="movie-card">
+                                <a href="https://www.themoviedb.org/movie/{movie["id"]}" target="_blank">
+                                    <img src="{poster_url}" class="movie-img" />
+                                </a>
+                            </div>
+                        ''', unsafe_allow_html=True)
 
 # Trending Now Section
 st.markdown("## Trending Now")
