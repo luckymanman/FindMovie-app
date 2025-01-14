@@ -16,6 +16,18 @@ def search_movie(query):
     
     return data['results']
 
+# Search for an actor by name
+def search_actor(query):
+    url = f'https://api.themoviedb.org/3/search/person?api_key={api_key}&query={query}'
+    response = requests.get(url)
+    data = response.json()
+
+    if 'results' not in data:
+        st.error("No actor found.")
+        return []
+
+    return data['results']
+
 # Fetch the poster URL for the movie
 def fetch_poster_url(poster_path):
     if poster_path:
@@ -69,6 +81,18 @@ def fetch_movies_by_genre(genre_id):
         return []
     
     return data['results']
+
+# Fetch movies for a specific actor
+def fetch_movies_by_actor(actor_id):
+    url = f'https://api.themoviedb.org/3/person/{actor_id}/movie_credits?api_key={api_key}'
+    response = requests.get(url)
+    data = response.json()
+
+    if 'cast' not in data:
+        st.error("Unable to fetch movies for this actor.")
+        return []
+    
+    return data['cast']
 
 # Apply dark mode styles
 def apply_styles():
@@ -199,21 +223,13 @@ if search_query or search_button:
 # Genre List Section
 st.markdown("## Genre List")
 genres = fetch_genres()
-genre_buttons = [genre['name'] for genre in genres]
 
-# Display genre buttons
-selected_genre = st.selectbox("Select a genre:", genre_buttons)
-
-if selected_genre:
-    # Find the genre id based on the selected genre name
-    genre_id = next((genre['id'] for genre in genres if genre['name'] == selected_genre), None)
-    
-    # Fetch movies for the selected genre
-    if genre_id:
-        genre_movies = fetch_movies_by_genre(genre_id)
-        
+# Display genre buttons as clickable links
+for genre in genres:
+    if st.button(genre['name']):
+        genre_movies = fetch_movies_by_genre(genre['id'])
         if genre_movies:
-            st.write(f"Movies in the '{selected_genre}' genre:")
+            st.write(f"Movies in the '{genre['name']}' genre:")
             cols = st.columns(5)
             for i, movie in enumerate(genre_movies):
                 with cols[i % 5]:
@@ -226,6 +242,35 @@ if selected_genre:
                                 </a>
                             </div>
                         ''', unsafe_allow_html=True)
+
+# Actor Search Section
+actor_query = st.text_input("Search for an actor:", placeholder="Enter actor name...", key="actor_query")
+actor_search_button = st.button("Search Actor")
+
+if actor_query or actor_search_button:
+    actors = search_actor(actor_query)
+
+    if actors:
+        actor_names = [actor['name'] for actor in actors]
+        selected_actor = st.selectbox("Select an actor:", actor_names)
+        actor_id = next((actor['id'] for actor in actors if actor['name'] == selected_actor), None)
+
+        if actor_id:
+            actor_movies = fetch_movies_by_actor(actor_id)
+            if actor_movies:
+                st.write(f"Movies with {selected_actor}:")
+                cols = st.columns(5)
+                for i, movie in enumerate(actor_movies):
+                    with cols[i % 5]:
+                        poster_url = fetch_poster_url(movie['poster_path'])
+                        if poster_url:
+                            st.markdown(f'''
+                                <div class="movie-card">
+                                    <a href="https://www.themoviedb.org/movie/{movie["id"]}" target="_blank">
+                                        <img src="{poster_url}" class="movie-img" />
+                                    </a>
+                                </div>
+                            ''', unsafe_allow_html=True)
 
 # Trending Now Section
 st.markdown("## Trending Now")
