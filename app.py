@@ -58,30 +58,6 @@ def fetch_recommended_movies():
     
     return data['results']
 
-# Fetch genres
-def fetch_genres():
-    url = f'https://api.themoviedb.org/3/genre/movie/list?api_key={api_key}'
-    response = requests.get(url)
-    data = response.json()
-
-    if 'genres' not in data:
-        st.error("Unable to fetch genres.")
-        return []
-
-    return data['genres']
-
-# Fetch movies for a specific genre
-def fetch_movies_by_genre(genre_id):
-    url = f'https://api.themoviedb.org/3/discover/movie?api_key={api_key}&with_genres={genre_id}'
-    response = requests.get(url)
-    data = response.json()
-
-    if 'results' not in data:
-        st.error("Unable to fetch movies for this genre.")
-        return []
-    
-    return data['results']
-
 # Fetch movies for a specific actor
 def fetch_movies_by_actor(actor_id):
     url = f'https://api.themoviedb.org/3/person/{actor_id}/movie_credits?api_key={api_key}'
@@ -94,7 +70,7 @@ def fetch_movies_by_actor(actor_id):
     
     return data['cast']
 
-# Apply dark mode styles and diagonal genre layout
+# Apply dark mode styles
 def apply_styles():
     st.markdown("""
         <style>
@@ -166,20 +142,6 @@ def apply_styles():
                 transform: scale(1.1);
             }
 
-            /* Diagonal Genre List */
-            .genre-button {
-                transform: rotate(-45deg);
-                background-color: #444444;
-                color: white;
-                border-radius: 10px;
-                padding: 15px;
-                cursor: pointer;
-                width: auto;
-                white-space: nowrap;
-                margin: 5px;
-                display: inline-block;
-            }
-
             /* Responsive Columns */
             @media only screen and (max-width: 600px) {
                 .stColumn { flex: 1 1 50%; }
@@ -233,31 +195,6 @@ if search_query or search_button:
                     ''', unsafe_allow_html=True)
                 else:
                     st.write("Poster not available")
-
-# Genre List Section
-st.markdown("## Genre List")
-
-genres = fetch_genres()
-
-# Display genre buttons horizontally and diagonally
-for idx, genre in enumerate(genres):
-    st.markdown(f'<div class="genre-button" style="position: relative; top:{idx * 60}px; left:{idx * 100}px;">{genre["name"]}</div>', unsafe_allow_html=True)
-    if st.button(genre['name'], key=genre['id']):
-        genre_movies = fetch_movies_by_genre(genre['id'])
-        if genre_movies:
-            st.write(f"Movies in the '{genre['name']}' genre:")
-            cols = st.columns(5)
-            for i, movie in enumerate(genre_movies):
-                with cols[i % 5]:
-                    poster_url = fetch_poster_url(movie['poster_path'])
-                    if poster_url:
-                        st.markdown(f'''
-                            <div class="movie-card">
-                                <a href="https://www.themoviedb.org/movie/{movie["id"]}" target="_blank">
-                                    <img src="{poster_url}" class="movie-img" />
-                                </a>
-                            </div>
-                        ''', unsafe_allow_html=True)
 
 # Actor Search Section
 actor_query = st.text_input("Search for an actor:", placeholder="Enter actor name...", key="actor_query")
