@@ -94,7 +94,7 @@ def fetch_movies_by_actor(actor_id):
     
     return data['cast']
 
-# Apply dark mode styles
+# Apply dark mode styles and diagonal genre layout
 def apply_styles():
     st.markdown("""
         <style>
@@ -166,6 +166,20 @@ def apply_styles():
                 transform: scale(1.1);
             }
 
+            /* Diagonal Genre List */
+            .genre-button {
+                position: absolute;
+                transform: rotate(-45deg);
+                background-color: #444444;
+                color: white;
+                border-radius: 10px;
+                padding: 15px;
+                cursor: pointer;
+                width: auto;
+                white-space: nowrap;
+                margin: 5px;
+            }
+
             /* Responsive Columns */
             @media only screen and (max-width: 600px) {
                 .stColumn { flex: 1 1 50%; }
@@ -222,11 +236,13 @@ if search_query or search_button:
 
 # Genre List Section
 st.markdown("## Genre List")
+
 genres = fetch_genres()
 
-# Display genre buttons as clickable links
-for genre in genres:
-    if st.button(genre['name']):
+# Display genre buttons diagonally
+for idx, genre in enumerate(genres):
+    st.markdown(f'<div class="genre-button" style="top:{idx * 60}px; left:{idx * 100}px;">{genre["name"]}</div>', unsafe_allow_html=True)
+    if st.button(genre['name'], key=genre['id']):
         genre_movies = fetch_movies_by_genre(genre['id'])
         if genre_movies:
             st.write(f"Movies in the '{genre['name']}' genre:")
