@@ -22,9 +22,32 @@ def fetch_poster_url(poster_path):
         return f"https://image.tmdb.org/t/p/w500{poster_path}"
     return None
 
+# Fetch trending movies
+def fetch_trending_movies():
+    url = f'https://api.themoviedb.org/3/trending/movie/day?api_key={api_key}'
+    response = requests.get(url)
+    data = response.json()
+    
+    if 'results' not in data:
+        st.error("Unable to fetch trending movies.")
+        return []
+    
+    return data['results']
+
+# Fetch recommended movies (we use popular for now)
+def fetch_recommended_movies():
+    url = f'https://api.themoviedb.org/3/movie/popular?api_key={api_key}'
+    response = requests.get(url)
+    data = response.json()
+
+    if 'results' not in data:
+        st.error("Unable to fetch recommended movies.")
+        return []
+    
+    return data['results']
+
 # Apply dark mode styles
 def apply_styles():
-    # Dark mode styles
     st.markdown("""
         <style>
             body {
@@ -148,3 +171,37 @@ if search_query or search_button:
                     ''', unsafe_allow_html=True)
                 else:
                     st.write("Poster not available")
+
+# Trending Now Section
+st.markdown("## Trending Now")
+trending_movies = fetch_trending_movies()
+if trending_movies:
+    cols = st.columns(5)
+    for i, movie in enumerate(trending_movies):
+        with cols[i % 5]:
+            poster_url = fetch_poster_url(movie['poster_path'])
+            if poster_url:
+                st.markdown(f'''
+                    <div class="movie-card">
+                        <a href="https://www.themoviedb.org/movie/{movie["id"]}" target="_blank">
+                            <img src="{poster_url}" class="movie-img" />
+                        </a>
+                    </div>
+                ''', unsafe_allow_html=True)
+
+# Recommended for You Section
+st.markdown("## Recommended for You")
+recommended_movies = fetch_recommended_movies()
+if recommended_movies:
+    cols = st.columns(5)
+    for i, movie in enumerate(recommended_movies):
+        with cols[i % 5]:
+            poster_url = fetch_poster_url(movie['poster_path'])
+            if poster_url:
+                st.markdown(f'''
+                    <div class="movie-card">
+                        <a href="https://www.themoviedb.org/movie/{movie["id"]}" target="_blank">
+                            <img src="{poster_url}" class="movie-img" />
+                        </a>
+                    </div>
+                ''', unsafe_allow_html=True)
