@@ -86,6 +86,16 @@ def apply_styles():
             .movie-img:hover {
                 transform: scale(1.1);
             }
+            .genre-button {
+                background-color: #444444;
+                color: white;
+                border-radius: 10px;
+                padding: 15px;
+                cursor: pointer;
+                width: auto;
+                white-space: nowrap;
+                margin: 5px;
+            }
         </style>
     """, unsafe_allow_html=True)
 
@@ -95,24 +105,21 @@ apply_styles()  # Apply dark mode styles
 # Cool system title
 st.markdown('<h1 class="cool-title">FindMovie: A Movie Recommendation System</h1>', unsafe_allow_html=True)
 
-# Fetch genres from TMDB API
+# Genre List Section
+st.markdown("## Explore Movies by Genre")
+
 genres = fetch_genres()
 
-# Genre dropdown
-selected_genre = st.selectbox("Select a Genre:", [genre['name'] for genre in genres])
+# Create a horizontal genre list
+genre_buttons = [st.button(genre["name"], key=genre['id']) for genre in genres]
 
-# Find the genre ID based on the selected genre
-selected_genre_id = next(genre['id'] for genre in genres if genre['name'] == selected_genre)
-
-# Fetch popular movies for the selected genre
-if selected_genre:
-    st.markdown(f"## Popular movies in the '{selected_genre}' genre:")
-    genre_movies = fetch_popular_movies_by_genre(selected_genre_id)
-    
-    if genre_movies:
-        cols = st.columns(5)
-        for i, movie in enumerate(genre_movies):
-            with cols[i % 5]:  # Cycle through columns for each movie
+# Display movies for the selected genre
+for idx, genre in enumerate(genres):
+    if genre_buttons[idx]:
+        genre_movies = fetch_popular_movies_by_genre(genre['id'])
+        if genre_movies:
+            st.write(f"Popular movies in the '{genre['name']}' genre:")
+            for movie in genre_movies:
                 poster_url = fetch_poster_url(movie['poster_path'])
                 if poster_url:
                     st.markdown(f'''
@@ -122,5 +129,3 @@ if selected_genre:
                             </a>
                         </div>
                     ''', unsafe_allow_html=True)
-                else:
-                    st.write("Poster not available")
